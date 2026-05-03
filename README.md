@@ -97,7 +97,7 @@
 | **5교시** | ↑ | ↑ | sHealth 발표 | [실습]AI 코드품질 개선<br>(S/W Cursor AI)<br>Feedback analyzer | [실습]Prompting BP<br>사례 공유 |
 | **6교시** | 자동화로 개발 효율 높이기<br>커스텀 명령어 반복 작업 자동화 \| 할루시네이션 방지 검증 전략 | TDD_TV 발표 | [실습]AI 코드품질 개선<br>(S/W Cursor AI)<br>UnitConverter | Legacy 유지보수<br>중심 실습 | |
 | **7교시** | OpenRouter API + AI 에이전트 | [실습]AI 코드품질 개선<br>(S/W Cursor AI)<br>sHealth | 신규 프로젝트 PRD<br>중심 실습 | ↑ | |
-| **8교시** | MCP — Notion + GitHub 연동 | ↑<br>Activities 중심 실습 | ↑ | | Prompting BP 발표 |
+| **8교시** | MCP | ↑<br>Activities 중심 실습 | ↑ | | Prompting BP 발표 |
 | **Total Time** | 8 | 8 | 8 | 8 | **8 → 합계 40** |
 
 ---
