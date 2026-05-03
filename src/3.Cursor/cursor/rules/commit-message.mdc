@@ -1,0 +1,7 @@
+---
+alwaysApply: false
+---
+타입: feat|fix|refactor|perf|test|chore|docs
+형식: <type>(scope): 요약(한글, 명령문)
+본문: 변경 이유/영향/리스크(필요 시)
+예: refactor(merge-worker): TaskGroup 도입으로 병합 동시성 제어
