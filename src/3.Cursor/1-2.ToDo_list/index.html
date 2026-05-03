@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Tasks</title>
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("myTasks:theme:v1");
+          if (t === "dark") document.documentElement.setAttribute("data-theme", "dark");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="app__header">
+        <div class="app__header-top">
+          <h1 class="app__title">My Tasks</h1>
+          <div class="theme-switch" title="다크 모드 (Alt+D)">
+            <input
+              type="checkbox"
+              class="theme-switch__input visually-hidden"
+              id="theme-toggle"
+              aria-label="다크 모드"
+            />
+            <label class="theme-switch__track" for="theme-toggle">
+              <span class="theme-switch__thumb" aria-hidden="true"></span>
+              <span class="theme-switch__icon theme-switch__icon--sun" aria-hidden="true">☀</span>
+              <span class="theme-switch__icon theme-switch__icon--moon" aria-hidden="true">☽</span>
+            </label>
+          </div>
+        </div>
+        <p class="app__shortcuts-hint visually-hidden" id="shortcuts-hint">
+          단축키: Alt+N 입력, Alt+1~4 필터, Alt+D 테마
+        </p>
+      </header>
+
+      <section
+        class="dashboard"
+        id="dashboard"
+        aria-label="진행률 대시보드"
+      >
+        <div class="dashboard__overall">
+          <p class="dashboard__summary" id="dashboard-summary"></p>
+          <div
+            class="dashboard__bar-track"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+            aria-label="전체 완료 진행률"
+            id="dashboard-progress"
+          >
+            <div class="dashboard__bar-fill" id="dashboard-bar-fill"></div>
+          </div>
+        </div>
+        <div
+          class="dashboard__categories"
+          id="dashboard-categories"
+          aria-label="카테고리별 진행"
+        ></div>
+        <p class="dashboard__today" id="dashboard-today"></p>
+        <blockquote class="app__quote" id="daily-quote" aria-live="polite"></blockquote>
+        <p class="app__cheer" id="completion-cheer" aria-live="polite"></p>
+      </section>
+
+      <section
+        class="data-toolbar"
+        id="data-toolbar"
+        role="region"
+        aria-label="데이터보내기 및 가져오기"
+      >
+        <h2 class="visually-hidden">데이터 관리</h2>
+        <button type="button" class="btn-toolbar" id="btn-export-json" aria-describedby="export-hint">
+          JSON보내기
+        </button>
+        <p class="visually-hidden" id="export-hint">현재 할 일 목록을 JSON 파일로 저장합니다.</p>
+        <label class="btn-toolbar btn-toolbar--file">
+          <span>JSON 가져오기</span>
+          <input
+            type="file"
+            id="input-import-json"
+            class="visually-hidden"
+            accept=".json,application/json"
+            aria-label="JSON 파일 선택하여 할 일 가져오기"
+          />
+        </label>
+      </section>
+
+      <div
+        class="sort-toolbar"
+        id="sort-toolbar"
+        role="radiogroup"
+        aria-labelledby="sort-toolbar-label"
+      >
+        <span class="sort-toolbar__label" id="sort-toolbar-label">정렬</span>
+        <button type="button" class="sort-toolbar__btn" data-sort="created" role="radio" aria-checked="false">
+          생성일
+        </button>
+        <button type="button" class="sort-toolbar__btn" data-sort="category" role="radio" aria-checked="false">
+          카테고리
+        </button>
+        <button type="button" class="sort-toolbar__btn" data-sort="completed" role="radio" aria-checked="false">
+          완료 여부
+        </button>
+        <button type="button" class="sort-toolbar__btn" data-sort="manual" role="radio" aria-checked="false">
+          수동(드래그)
+        </button>
+      </div>
+
+      <div
+        class="task-filters"
+        id="task-filters"
+        role="group"
+        aria-label="카테고리 필터"
+      >
+        <button
+          type="button"
+          class="task-filter__btn"
+          data-filter="all"
+          aria-pressed="true"
+        >
+          전체
+        </button>
+        <button type="button" class="task-filter__btn" data-filter="work" aria-pressed="false">
+          업무
+        </button>
+        <button
+          type="button"
+          class="task-filter__btn"
+          data-filter="personal"
+          aria-pressed="false"
+        >
+          개인
+        </button>
+        <button type="button" class="task-filter__btn" data-filter="study" aria-pressed="false">
+          공부
+        </button>
+      </div>
+
+      <div class="app__toolbar">
+        <span
+          class="remaining-badge"
+          id="remaining-badge"
+          aria-live="polite"
+          title="현재 필터 기준 미완료 개수"
+        ></span>
+        <div class="search-wrap">
+          <label class="visually-hidden" for="task-search">할 일 검색</label>
+          <input
+            type="search"
+            id="task-search"
+            class="task-search__input"
+            placeholder="검색…"
+            autocomplete="off"
+            maxlength="200"
+            aria-label="할 일 검색"
+          />
+        </div>
+      </div>
+
+      <form class="task-form" id="task-form" autocomplete="off">
+        <div class="task-form__row">
+          <label class="visually-hidden" for="task-input">할 일 입력</label>
+          <input
+            type="text"
+            id="task-input"
+            class="task-form__input"
+            placeholder="할 일을 입력하세요…"
+            maxlength="500"
+          />
+          <label class="visually-hidden" for="task-category">카테고리</label>
+          <select id="task-category" class="task-form__select" aria-label="카테고리">
+            <option value="work">업무</option>
+            <option value="personal">개인</option>
+            <option value="study">공부</option>
+          </select>
+          <button type="submit" class="task-form__submit" aria-label="할 일 추가">
+            추가
+          </button>
+        </div>
+        <div class="task-form__options">
+          <label class="task-form__auto-label">
+            <input type="checkbox" id="auto-category" checked />
+            <span>키워드로 자동 분류</span>
+          </label>
+          <span
+            class="task-form__category-hint"
+            id="task-category-hint"
+            aria-live="polite"
+            hidden
+          ></span>
+        </div>
+      </form>
+
+      <div class="list-actions">
+        <button
+          type="button"
+          class="btn-clear-completed"
+          id="btn-clear-completed"
+          aria-label="완료된 할 일 모두 영구 삭제"
+        >
+          완료된 항목 모두 삭제
+        </button>
+      </div>
+
+      <ul
+        class="task-list"
+        id="task-list"
+        aria-live="polite"
+        aria-label="할 일 목록"
+        role="list"
+      ></ul>
+      <p class="task-list__hint" id="manual-sort-hint" role="status" hidden></p>
+    </main>
+
+    <div
+      class="undo-bar"
+      id="undo-bar"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      hidden
+    >
+      <span class="undo-bar__text" id="undo-bar-text"></span>
+      <button type="button" class="undo-bar__btn" id="undo-bar-btn">실행 취소</button>
+    </div>
+
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+    <div
+      class="toast-region toast-region--assertive"
+      id="toast-region-assertive"
+      aria-live="assertive"
+      aria-atomic="true"
+    ></div>
+
+    <dialog
+      class="confirm-dialog"
+      id="dialog-import-backup"
+      aria-labelledby="dialog-import-backup-title"
+    >
+      <form method="dialog" class="confirm-dialog__form">
+        <h2 class="confirm-dialog__title" id="dialog-import-backup-title">데이터 가져오기</h2>
+        <p class="confirm-dialog__body" id="dialog-import-backup-body"></p>
+        <div class="confirm-dialog__actions confirm-dialog__actions--triple">
+          <button
+            type="submit"
+            value="cancel"
+            class="confirm-dialog__btn confirm-dialog__btn--secondary"
+          >
+            취소
+          </button>
+          <button
+            type="submit"
+            value="no-backup"
+            class="confirm-dialog__btn confirm-dialog__btn--secondary"
+          >
+            백업 없이 가져오기
+          </button>
+          <button type="submit" value="backup" class="confirm-dialog__btn confirm-dialog__btn--danger">
+            백업 후 가져오기
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="confirm-dialog" id="dialog-duplicate" aria-labelledby="dialog-duplicate-title">
+      <form method="dialog" class="confirm-dialog__form">
+        <h2 class="confirm-dialog__title" id="dialog-duplicate-title">중복된 할 일</h2>
+        <p class="confirm-dialog__body" id="dialog-duplicate-body"></p>
+        <div class="confirm-dialog__actions">
+          <button
+            type="submit"
+            value="cancel"
+            class="confirm-dialog__btn confirm-dialog__btn--secondary"
+          >
+            취소
+          </button>
+          <button type="submit" value="ok" class="confirm-dialog__btn confirm-dialog__btn--danger">
+            그래도 추가
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="confirm-dialog" id="dialog-clear-completed" aria-labelledby="dialog-clear-title">
+      <form method="dialog" class="confirm-dialog__form">
+        <h2 class="confirm-dialog__title" id="dialog-clear-title">완료 항목 삭제</h2>
+        <p class="confirm-dialog__body" id="dialog-clear-body"></p>
+        <div class="confirm-dialog__actions">
+          <button
+            type="submit"
+            value="cancel"
+            class="confirm-dialog__btn confirm-dialog__btn--secondary"
+          >
+            취소
+          </button>
+          <button type="submit" value="ok" class="confirm-dialog__btn confirm-dialog__btn--danger">
+            삭제
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="script.js"></script>
+  </body>
+</html>
