@@ -1,0 +1,7 @@
+{
+    "apexPMD.runOnFileSave": true,
+    "apexPMD.runOnFileChange": false,
+    "apexPMD.rulesets": [
+        "${workspaceFolder}/ruleset.xml"
+    ]
+}
