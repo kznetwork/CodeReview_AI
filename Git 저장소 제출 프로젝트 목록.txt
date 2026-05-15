@@ -1,0 +1,38 @@
+1.HelloCPlusPlus 혹은 HelloJava
+2.Arithmetic /PrimeChecker
+3.Person /CalcSample
+4.Gilded Rose-RED
+5.Refactoring_practice
+6.Gilded Rose-Refactoring
+7.TDD_TV_Init / 필기
+
+1.Prompting / 필기
+2.Gilded Rose-prompting
+3.TDD_TV_Init
+4.sHealth
+5.UnitConverter
+6.Feedback analyzer
+7.BP
+
+개별 점수
+필수 : 개인 발표 1회 必
+
+1.docs/PRD.md
+2.README.md
+3.README.md > To-Do List 정리
+
+1.프로젝트 내 테스트 코드
+2.깃 헙 내 각 단계별 브랜치 생성
+2-1.A팀 01번 Spec
+2-2.A팀 01번 RED
+2-3.A팀 01번 GREEN
+2-4.A팀 01번 Refactoring
+3.PR내 리뷰 10개 이상
+3-1.A팀 01번 Spec
+3-2.A팀 01번 RED
+3-3.A팀 01번 GREEN
+3-4.A팀 01번 Refactoring
+
+팀 점수가 개별 점수
+1.프로젝트 내 BP 문서
+2.BP 발표
